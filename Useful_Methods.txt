@@ -1,0 +1,440 @@
+1.Browser Back and Forward (NAVIGATION)
+Implement Browser back and forward through Selenium Web Driver
+
+CODE: driver.navigate().back();
+           driver.navigate().forward();
+Example
+
+WebDriver driver =new FirefoxDriver();
+driver.get("http://seleniumhq.org/");
+driver.findElement(By.linkText("Download")).click();
+Thread.sleep(3000);            //delay
+driver.navigate().back();
+driver.navigate().forward();
+------------------------------------------------------------------------------------------------------------------------------
+2.Handling DRAG and DROP
+
+Handle Drag and Drop through Selenium Web Driver
+
+
+Example
+
+WebDriver driver = new FirefoxDriver();
+driver.get("http://www.ericbieller.com/examples/dragdrop/");
+driver.manage().timeouts().implicitlyWait(3,TimeUnit.MINUTES);
+ 
+Actions act = new Actions(driver);
+WebElement src = driver.findElement(By.xpath("//div[@id='items']/div[1]"));
+WebElement des = driver.findElement(By.id("trash"));
+ 
+act.clickAndHold(src).build().perform();                //For each action we need to build and Perform
+act.moveToElement(des).build().perform();
+act.release(des).build().perform();
+------------------------------------------------------------------------------------------------------------------------------
+3.Making Single Select in Drop down (Option List)
+
+Single Select in Drop down through Selenium Web Driver.
+
+
+Example
+
+WebElement element = driver.findElement(By.name("selectedCustomer"));
+Select dd= new Select(element);
+List allOptions= dd.getOptions();  
+
+//To go through the list, we can use an Iterator. 
+//Iterator should be of the same type as the List
+//which is WebElement in this case.  
+
+Iterator it = allOptions.iterator();
+//Using while loop, we can iterate till the List has 
+//a next WebElement [hasNext() is true]
+//number of items in the list
+System.out.println(allOptions.size());
+
+while(it.hasNext()){
+//When you say it.next(), it points to a particular
+//WebElement in the List.
+WebElement el = it.next();
+ //Check for the required element by Text and click it
+if(el.getText().equals("mango")){
+  System.out.println(el.getAttribute("value"));
+   el.click();    
+ }
+} 
+------------------------------------------------------------------------------------------------------------------------------
+4.Making Single Select in Drop down (By INDEX, VALUE, TEXT)
+Single Select in Drop down through Selenium Web Driver.
+
+Example
+
+
+WebElement customerdd = driver.findElement(By.name("customerProject.shownCustomer"));
+  //convert the element to select object
+  Select cust = new Select(customerdd);
+  cust.selectByIndex(1);                                       //Select by Index
+  Thread.sleep(3000);
+  cust.selectByValue("2");                                   //Select by Value
+  Thread.sleep(3000);
+  cust.selectByVisibleText("mango");                //Select by Visible Text
+------------------------------------------------------------------------------------------------------------------------------
+
+
+5.Multiple Select List Box Window
+Multiple Select in Drop down through Selenium Web Driver.
+
+Example
+
+
+WebElement userdd = driver.findElement(By.name("users"));
+Select usr = new Select(userdd);
+usr.selectByIndex(0);                     //Select by Index(From Start location)
+usr.selectByIndex(2);                     //Select by index(To End Location)
+------------------------------------------------------------------------------------------------------------------------------
+
+
+6.Multiple Select List Box Window - DESELECT
+Make Deselect in Drop down through Selenium Web Driver.
+
+Example
+
+WebElement userdd = driver.findElement(By.name("users"));
+Select usr = new Select(userdd);
+usr.selectByIndex(0);
+usr.selectByIndex(2);
+
+
+
+//You can deselect the options
+usr.deselectAll();                                          //Deselect ALL selected elements
+//or  
+usr.deselectByIndex(0);                              //Deselect By using Index
+//or
+usr.deselectByValue(value);                       //Deselect By using Value
+//or
+usr.deselectByVisibleText(text);                 //Deselect By using Text
+------------------------------------------------------------------------------------------------------------------------------
+
+
+7.iFRAMES - How to handle Frames in Web Driver
+Get Source of each iFrame through Selenium Web Driver.
+
+
+Example
+
+
+/*times of india website - multiple frames*/
+
+driver.get("http://timesofindia.indiatimes.com/");
+driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+
+List frms= driver.findElements(By.tagName("iframe"));  //Frame List
+System.out.println(frms.size());
+for(int i=0;i
+{
+ System.out.println(frms.get(i).getAttribute("src"));
+}------------------------------------------------------------------------------------------------------------------------------
+
+
+8.iFRAMES - How to perform action in Frames
+Perform Action in iFrame through Selenium Web Driver.
+
+Example
+
+
+WebElement ifr = driver.findElement(By.xpath("//iframe[@src='/poll.cms']"));
+driver.switchTo().frame(ifr);                                     //Switch to iFrame
+driver.findElement(By.id("mathuserans2")).sendKeys("8");  //Perform Action in iFrame
+------------------------------------------------------------------------------------------------------------------------------
+
+9.iFRAMES - How to switch to a perticular Frame through index
+To switch to perticular iFrame by index through Selenium Web Driver.
+
+Example
+
+driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+
+List frms= driver.findElements(By.tagName("iframe"));
+System.out.println(frms.size());
+driver.switchTo().frame(0);
+driver.findElement(By.id("clicktripad")).click();
+------------------------------------------------------------------------------------------------------------------------------
+
+
+10. TABS / New Window
+
+When Browser opens in a new window or in a new tab, Web Driver cannot shift the control to the new Window/ Tab. We need to collect the window handles in a page. Whenever a new window opens we need to iterate and shift to the latest window handle.
+
+TABS/New Window - 1
+
+
+Set windowHandles = driver.getWindowHandles();
+Iterator it = windowHandles.iterator();
+while(it.hasNext())
+{
+ System.out.println(it.next());
+}------------------------------------------------------------------------------------------------------------------------------
+
+TABS/New Window - 2
+
+When two browsers are opened and Web Driver need to shift the control from Parent Window to Child Window. 
+
+
+Set windowHandles = driver.getWindowHandles();
+Iterator it = windowHandles.iterator();
+
+
+String parentBrowser= it.next();
+String childBrowser = it.next();
+driver.switchTo().window(childBrowser); 
+------------------------------------------------------------------------------------------------------------------------------
+
+
+TABS/New Window - 3
+
+When second browser is closed/you close it and Web Driver need to shift the control from Child Window to Parent Window. 
+
+
+Set windowHandles = driver.getWindowHandles();
+Iterator it = windowHandles.iterator();
+
+String parentBrowser= it.next();
+String childBrowser = it.next();
+driver.switchTo().window(childBrowser); 
+Thread.sleep(3000);
+
+driver.close();                              //close the current  window(Child Browser)
+driver.switchTo().window(parentBrowser);          //Switch to Parent Browser
+
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+
+11. CALENDAR popups
+Calendar PopUp - 1
+
+Normal Calender(current month) Popup can be handled in the following way.
+
+
+
+/*IRCTC calendar*/
+driver.findElement(By.id("calendar_icon1")).click();  
+driver.findElement(By.xpath("//div[@id='CalendarControl']/table[tbody[tr[td[text()='October 2012']]]]/descendant::a[text()='5']")).click();
+------------------------------------------------------------------------------------------------------------------------------
+
+Calendar PopUp - 2 (Customized wait)
+
+ In a Calender if we want to click on future month which is not currently displayed, we need to click on next link until we get the required month.
+           This can be done by writing Customized wait. Check for particular date element in each month, if not found move to next month.
+
+/*makemytrip calendar*/
+driver.get("http://www.makemytrip.com/");
+driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+driver.findElement(By.id("deptDateRtripimgExact")).click(); //find Calendar
+driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+boolean flag=true;
+while(flag){
+  try {
+ WebElement el = driver.findElement(By.xpath("//div[contains(@class,'ui-datepicker-group') and descendant::span[text()='March']]/descendant::a[text()='5']")); // Required future date
+ if(el !=null)   //Check if the required date element is found or not
+       {
+  el.click(); // if required Date is found, then click  the date
+  flag=false;
+ }
+    } 
+catch (Exception e) { //Catches exception if no element found
+try {
+ Thread.sleep(500);
+ driver.findElement(By.xpath("//a[@title='Next']")).click(); //Click on next month
+ }
+catch (InterruptedException e1) 
+      {
+ // TODO Auto-generated catch block
+  e1.printStackTrace();
+      }
+  }
+} 
+------------------------------------------------------------------------------------------------------------------------------
+
+
+12. Drop Down MENU
+
+
+  In order to click on an menu item, first we need to move the mouse over Parent menu, later we can click on any of the Menu child item.
+
+
+WebElement parentMenu = driver.findElement(By.linkText("Tourist Trains"));
+Actions act = new Actions(driver); // Create an Action object
+//move to the parent menu item
+act.moveToElement(parentMenu).build().perform(); 
+Thread.sleep(3000);   //wait till the child items are displayed
+driver.findElement(By.linkText("Bharat Tirth")).click();
+
+------------------------------------------------------------------------------------------------------------------------------
+
+
+13. Context Click (Right Click)
+We can use keyboard keys to Make a Right Click.
+
+
+WebElement parentMenu = driver.findElement(By.linkText("Tourist Trains"));
+ 
+Actions act = new Actions(driver); //Create Action object for Driver
+
+act.contextClick(parentMenu).build().perform(); //Context Click
+
+act.sendKeys(Keys.ARROW_RIGHT).build().perform();
+Thread.sleep(1000);
+act.sendKeys(Keys.ARROW_DOWN).build().perform();
+Thread.sleep(1000);
+act.sendKeys(Keys.ENTER).build().perform();
+
+------------------------------------------------------------------------------------------------------------------------------
+  
+
+14. JAVA SCRIPT example
+We can use java script command to perform actions.
+We can write code to fill up the text box through java script.
+
+JavascriptExecutor js = (JavascriptExecutor) driver;
+String jsCmd = "document.getElementsByName('city')[0].value='ban'";
+js.executeScript(jsCmd);
+------------------------------------------------------------------------------------------------------------------------------
+
+15. Multiple Elements
+We can count the number of links present in the page. We can also print the link text of each Web link.
+
+
+
+List allLinks= driver.findElements(By.xpath("//a"));
+//display the count of links in the page
+System.out.println(allLinks.size());
+//display the text for each link on the page
+for(int i=0;i
+{
+        //display href for each link
+ System.out.println(allLinks.get(i).getAttribute("href"));
+ //display text for each link
+ System.out.println(allLinks.get(i).getText());
+ //perform click action
+ allLinks.get(i).click();
+
+}
+
+------------------------------------------------------------------------------------------------------------------------------
+
+16. Other Browser (Internet Explorer)
+
+
+Using Internet Explorer with Web Driver.
+
+System.setProperty("webdriver.ie.driver", "D:\\sel\\browserdrivers\\IEDriverServer.exe");
+
+
+WebDriver driver =new InternetExplorerDriver();
+driver.get("www.google.com");
+------------------------------------------------------------------------------------------------------------------------------
+
+
+17. Other Browser (Chrome)
+
+Using Chrome with Web Driver.
+
+System.setProperty("webdriver.chrome.driver", "D:\\sel\\browserdrivers\\Chromedriver.exe");
+
+WebDriver driver = new ChromeDriver(); 
+driver.get("www.google.com");
+------------------------------------------------------------------------------------------------------------------------------
+
+
+18. PROXY settings.
+
+import org.openqa.Selenium.Proxy
+
+FirefoxProfile profile = new FirefoxProfile();
+String PROXY = "xx.xx.xx.xx:xx";
+Proxy proxy = new Proxy();
+proxy.HttpProxy=PROXY;
+proxy.FtpProxy=PROXY;
+proxy.SslProxy=PROXY;
+profile.SetProxyPreferences(proxy);
+FirefoxDriver driver = new FirefoxDriver(profile);
+
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+19. Page Onload authentication
+Sometimes when you are Automating Web pages, you may come across Page onload Authentication window. This window is not java popup/div. It is windows popup. Selenium directly cannot handle this windows popup.
+Hence we use Autoit sowftware tool. Through Selenium we can handle this situation using Autoit.
+
+
+1.Download Autoit from the following URl
+  ( http://www.autoitscript.com/site/autoit/downloads/ )
+2.Install downloaded software.
+3. Open Script Editor
+   Start=>ProgramFiles=>AutoIt =>SciTE Script Editor.
+4.Open Object Identifier.
+  Start=>ProgramFiles=>AutoIt =>AutoIt Window Info.
+5.Drag and Drop finder tool in AutoIt Window Info, to the Window you need to     identify.
+6.Collect the Title Name of window from (AutoIt Window Info.)
+7.Write the Script in the Editor.
+----------------------------------------------------AUTOIT CODE-----------------------------------------------------
+
+WinWaitActive("Authentication Required")
+Send("admin")
+Send("{TAB} admin{TAB} {ENTER}")
+
+------------------------------------------------------------------------------------------------------------------------------
+8.Save the file as default save.(Authentication1.exe)
+9.RUN/Compile the SCRIPT, it creates an exe.
+10.Mention the exe path in the Program before creation of Driver.
+
+EXAMPLE:
+
+
+Process P = Runtime.getRuntime().exec("D:\\java_prj\\SELENIUM WEBDRIVER\\AUTOIT\\Authentication1.exe");
+WebDriver driver = new FirefoxDriver();
+driver.get("http://192.168.1.1");
+
+------------------------------------------------------------------------------------------------------------------------------
+
+20. File Download
+
+FirefoxProfile Prof = new FirefoxProfile();
+Prof.setPreference("browser.download.dir", "D:\\java prj");
+Prof.setPreference("browser.download.folderList", 2);
+Prof.setPreference("browser.helperApps.neverAsk.saveToDisk","application/zip");
+  
+WebDriver driver = new FirefoxDriver(Prof);
+driver.get("http://seleniumhq.org/download/");
+driver.manage().timeouts().implicitlyWait(3,TimeUnit.MINUTES);
+driver.findElement(By.xpath("//a[@name='client-drivers']/table/tbody/tr[1]/td[4]/a")).click();
+
+------------------------------------------------------------------------------------------------------------------------------
+21. File Upload
+
+
+WebDriver driver = new FirefoxDriver();
+driver.get("http://www.2shared.com/");
+String FilePath = "C:\\Users\\abc\\Desktop\\test.xml";
+driver.findElement(By.id("upField")).sendKeys(FilePath);
+driver.findElement(By.xpath("//input[@type='image']")).click();
+------------------------------------------------------------------------------------------------------------------------------
+
+
+22. Handling JAVA ALERT
+Sometimes you may get alerts as anticipated(through Insert/update/delete operation in database). These may be JAVA alerts.
+Please follow the steps mentioned below to handle  Alerts.
+
+
+
+WebDriver driver = new FirefoxDriver();
+driver.get("http://www.2shared.com/");
+driver.manage().timeouts().implicitlyWait(3,TimeUnit.MINUTES);
+
+Alert alert = driver.switchTo().alert();
+alert.accept();
+//or
+alert.dismiss();
